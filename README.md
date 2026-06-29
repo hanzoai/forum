@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/hero.svg" alt="forum" width="880"></p>
+
 <a href="https://www.discourse.org/">
   <img src="images/discourse-readme-logo.png" width="300px">
 </a>

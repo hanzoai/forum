@@ -5,10 +5,21 @@
 # so a syntax error, an unbalanced block or a bad heredoc fails here. The rspec
 # suites need Postgres and Redis and the Ember build needs a full pnpm install of
 # a monorepo this size — both are harnesses, not push gates.
+#
+# The interpreter provision is part of the assertion: the reusable provisions Go,
+# Node, Rust and Java, none of which parse Ruby, so on a runner without it the
+# gate would be exit 127 — a fact about the image, not about this repo. The file
+# count floor is there so a checkout that silently produced no Ruby cannot pass
+# by parsing nothing.
 test:
   - name: ruby-parse
     run: |
       set -euo pipefail
+      command -v ruby > /dev/null 2>&1 || {
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq ruby
+      }
+      ruby --version
       n=0
       while IFS= read -r f; do
         ruby -c "$f" > /dev/null

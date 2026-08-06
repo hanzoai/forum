@@ -1,0 +1,18 @@
+# Discourse-derived forum. Ruby app + Ember front end; the deployable artifact is
+# built elsewhere, so this repo's push gate is a parse gate.
+#
+# Gate: every tracked Ruby file parses. `ruby -c` is the real compiler front end,
+# so a syntax error, an unbalanced block or a bad heredoc fails here. The rspec
+# suites need Postgres and Redis and the Ember build needs a full pnpm install of
+# a monorepo this size — both are harnesses, not push gates.
+test:
+  - name: ruby-parse
+    run: |
+      set -euo pipefail
+      n=0
+      while IFS= read -r f; do
+        ruby -c "$f" > /dev/null
+        n=$((n + 1))
+      done < <(git ls-files '*.rb' 'Rakefile' 'Gemfile' 'config.ru')
+      echo "$n ruby files parse"
+      [ "$n" -gt 100 ]

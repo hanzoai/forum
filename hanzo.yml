@@ -1,10 +1,18 @@
 # Discourse-derived forum. Ruby app + Ember front end; the deployable artifact is
 # built elsewhere, so this repo's push gate is a parse gate.
 #
-# Gate: every tracked Ruby file parses. `ruby -c` is the real compiler front end,
-# so a syntax error, an unbalanced block or a bad heredoc fails here. The rspec
-# suites need Postgres and Redis and the Ember build needs a full pnpm install of
-# a monorepo this size — both are harnesses, not push gates.
+# Gate: every tracked Ruby file parses. Ruby's own parser is the judge, so a
+# syntax error, an unbalanced block or a bad heredoc fails here. The rspec suites
+# need Postgres and Redis and the Ember build needs a full pnpm install of a
+# monorepo this size — both are harnesses, not push gates.
+#
+# One interpreter reads all 5851 files rather than one `ruby -c` per file. Two
+# reasons, and the second is why this gate was red: `ruby -c` takes a script the
+# way the loader does, so a first line naming another interpreter sends it
+# hunting for a `#!...ruby` line — Rakefile says `#!/usr/bin/env rake`, ruby finds
+# no ruby line, and reports "no Ruby script found in input" on a file that is
+# perfectly good Ruby. parse_file reads the file as source, which is the fact
+# being asserted. The other reason is 5851 process spawns.
 #
 # The interpreter provision is part of the assertion: the reusable provisions Go,
 # Node, Rust and Java, none of which parse Ruby, so on a runner without it the
@@ -20,10 +28,18 @@ test:
         sudo apt-get install -y -qq ruby
       }
       ruby --version
-      n=0
-      while IFS= read -r f; do
-        ruby -c "$f" > /dev/null
-        n=$((n + 1))
-      done < <(git ls-files '*.rb' 'Rakefile' 'Gemfile' 'config.ru')
-      echo "$n ruby files parse"
-      [ "$n" -gt 100 ]
+      git ls-files -z '*.rb' 'Rakefile' 'Gemfile' 'config.ru' | ruby -e '
+        files = $stdin.read.split("\0")
+        bad = 0
+        files.each do |f|
+          begin
+            RubyVM::AbstractSyntaxTree.parse_file(f)
+          rescue SyntaxError => e
+            $stderr.puts "#{f}: #{e.message}"
+            bad += 1
+          end
+        end
+        abort "#{bad} of #{files.size} ruby files failed to parse" if bad > 0
+        abort "expected more than 100 ruby files, found #{files.size}" unless files.size > 100
+        puts "#{files.size} ruby files parse"
+      '

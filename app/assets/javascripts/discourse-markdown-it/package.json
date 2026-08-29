@@ -18,13 +18,13 @@
     "src"
   ],
   "dependencies": {
-    "@embroider/addon-shim": "^1.9.0",
+    "@embroider/addon-shim": "catalog:",
     "discourse-i18n": "workspace:1.0.0",
-    "ember-auto-import": "^2.10.0",
-    "markdown-it": "14.0.0",
+    "ember-auto-import": "catalog:",
+    "markdown-it": "catalog:",
     "pretty-text": "workspace:1.0.0",
     "truth-helpers": "workspace:1.0.0",
-    "xss": "^1.0.15"
+    "xss": "catalog:"
   },
   "peerDependencies": {
     "discourse-i18n": "workspace:1.0.0",

@@ -167,7 +167,7 @@ catalog:
   'stylelint-config-standard-scss': '^17.0.0'
   'terser': '^5.51.2'
   'testem': '^3.20.2'
-  'typescript': '7.0.2'
+  'typescript': '6.0.3'
   'util': '^0.12.5'
   'virtual-dom': '^2.1.1'
   'webpack': '^5.110.1'

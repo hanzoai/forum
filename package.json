@@ -40,6 +40,7 @@
     "stylelint-config-standard": "catalog:",
     "stylelint-config-standard-scss": "catalog:",
     "terser": "catalog:",
+    "tsgo": "npm:typescript@7.0.2",
     "typescript": "catalog:"
   },
   "scripts": {
@@ -57,6 +58,7 @@
     "lttf:ignore": "lint-to-the-future ignore",
     "lttf:output": "lint-to-the-future output -o ./lint-progress/",
     "lint-progress": "pnpm lttf:output && npx html-pages ./lint-progress --no-cache",
+    "typecheck": "node_modules/tsgo/bin/tsc --noEmit --incremental false -p jsconfig.json",
     "ember": "pnpm --dir=app/assets/javascripts/discourse ember"
   },
   "engines": {

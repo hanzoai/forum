@@ -2,6 +2,8 @@
 
 # hanzoai/forum
 
+[![Open in Hanzo](https://hanzo.app/badges/open-in-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/forum&ref=main&action=open) [![Edit with Hanzo](https://hanzo.app/badges/edit-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/forum&ref=main&action=edit) [![Deploy with Hanzo](https://hanzo.app/badges/deploy-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/forum&ref=main&action=deploy)
+
 A tracking fork of [Discourse](https://github.com/discourse/discourse), kept for a future
 Hanzo community forum.
 
